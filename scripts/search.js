@@ -1,24 +1,21 @@
 $(function(){
   var url = new URL(window.location.href);
   var searchedUrl = url.searchParams.get("search");
-  var data = {
-    text: searchedUrl
-  }
   showLoader();
-  // ajax("get","/api/result/?"+data,null,function(r){
-  //   if(r.Status===2000){
-  //       hideLoader();
-  //       renderSearchHead(searchedUrl);
-  //       renderDoughnutChart(r.SafePercentage);  
-  //   }
-  // },function(err){
-  //   console.log(err);
-  // });
-  setTimeout(function(){
-    hideLoader();
-    renderSearchHead(searchedUrl);
-    renderDoughnutChart(20); 
-  },2000);
+  ajax("get","/url/"+searchedUrl,null,function(r){
+    // if(r.Status===2000){
+        hideLoader();
+        renderSearchHead(r.Url);
+        renderDoughnutChart(r.SafePercent);
+    // }
+  },function(err){
+    console.log(err);
+  });
+  // setTimeout(function(){
+  //   hideLoader();
+  //   renderSearchHead(searchedUrl);
+  //   renderDoughnutChart(20);
+  // },2000);
 })
 
 function renderSearchHead(url){
@@ -35,6 +32,7 @@ function hideLoader(){
 }
 
 function ajax(type, urlApi, data, func, efunc, dataType, contentType, aSync, processData) {
+  var API = "localhost:3001"
   dataType = dataType || 'JSON';
   if (contentType !== false)
     contentType = contentType || 'application/json';
@@ -51,9 +49,6 @@ function ajax(type, urlApi, data, func, efunc, dataType, contentType, aSync, pro
       url: API + urlApi,
       dataType: dataType,
       contentType: contentType,
-      headers: {
-        'cache-control': 'no-cache',
-      },
       data: data,
       success: func,
       error: efunc
